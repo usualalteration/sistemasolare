@@ -188,6 +188,9 @@
     const after = screenToWorld(mx,my);
     cam.x += (before.x - after.x);
     cam.y += (before.y - after.y);
+    // If the user is zooming while hovering over a planet, show that body's info panel.
+    const hovered = pickBodyAt(mx, my);
+    if(hovered) showInfo(hovered);
   }, {passive:false});
 
   canvas.addEventListener('pointerdown', e=>{
@@ -206,6 +209,14 @@
   canvas.addEventListener('pointerup', e=>{ isDragging=false; canvas.releasePointerCapture(e.pointerId); });
   canvas.addEventListener('pointercancel', ()=>{ isDragging=false; });
 
+  // Single-click on a planet should open its detailed info panel.
+  canvas.addEventListener('click', e=>{
+    const picked = pickBodyAt(e.clientX, e.clientY);
+    if(picked){
+      showInfo(picked);
+    }
+  });
+
   // Double click to focus
   canvas.addEventListener('dblclick', e=>{
     const p = pickBodyAt(e.clientX, e.clientY);
@@ -214,20 +225,25 @@
 
   // Picking: check which body is under screen coords
   function pickBodyAt(sx,sy){
-    const world = screenToWorld(sx,sy);
-    // check planets in reverse order for visual stacking
+    // Convert click (screen) coordinates to detection using screen-space distances.
+    // computeBodyWorld returns positions in kilometers; drawing uses those positions scaled
+    // by `scale` when converting to screen. To reliably pick bodies we convert each
+    // body's world position to screen pixels and compare distances in screen space.
     for(let i=bodies.length-1;i>=0;i--){
       const b = bodies[i];
-      const pos = computeBodyWorld(b, state.simTime);
+      const posKm = computeBodyWorld(b, state.simTime);
+      const posScreen = worldToScreen(posKm.x * scale, posKm.y * scale);
       const vr = visualRadius(b.radius) * (b.id==='sun' ? 1.2 : 1);
-      const dx = world.x - pos.x, dy = world.y - pos.y;
+      const dx = sx - posScreen.x, dy = sy - posScreen.y;
       const dist = Math.sqrt(dx*dx + dy*dy);
       if(dist < vr*1.15) return b;
-      // check children (moon)
+      // check children (moon) by computing their world offsets and converting to screen
       if(b.children) for(const c of b.children){
-        const cpos = {x: pos.x + computeBodyWorld(c, state.simTime, b).x, y: pos.y + computeBodyWorld(c, state.simTime, b).y };
+        const childKm = computeBodyWorld(c, state.simTime, b);
+        const cposKm = { x: posKm.x + childKm.x, y: posKm.y + childKm.y };
+        const cScreen = worldToScreen(cposKm.x * scale, cposKm.y * scale);
         const cr = visualRadius(c.radius);
-        const d2 = Math.hypot(world.x - cpos.x, world.y - cpos.y);
+        const d2 = Math.hypot(sx - cScreen.x, sy - cScreen.y);
         if(d2 < cr*1.15) return c;
       }
     }
