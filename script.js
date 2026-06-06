@@ -346,20 +346,33 @@
     }
   }
 
+  // Draw the orbital tracks behind all planets and labels.
+  // These paths are purely visual guides, not physical trajectories.
   function drawOrbits(){
     const cx = canvas.width/DPR/2, cy = canvas.height/DPR/2;
-    ctx.save(); ctx.translate(cx,cy); ctx.scale(cam.zoom, cam.zoom); ctx.translate(-cam.x, -cam.y);
-    ctx.lineWidth = Math.max(0.8, 1/Math.max(1, cam.zoom));
-    ctx.strokeStyle = '#a8a8a7';
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.scale(cam.zoom, cam.zoom);
+    ctx.translate(-cam.x, -cam.y);
+
+    // Use a fixed screen-space stroke width by compensating for camera zoom.
+    // This makes the orbit lines appear uniform whether the user zooms in or out.
+    ctx.lineWidth = 0.7 / Math.max(0.0001, cam.zoom);
+    ctx.strokeStyle = '#6b6b6a';
     ctx.setLineDash([]);
+    ctx.lineCap = 'round';
+
     for(const b of bodies){
       if(!b.orbit || b.orbit.a===0) continue;
-      const a = b.orbit.a * AU; const e = b.orbit.e||0; const bMinor = a*Math.sqrt(1-e*e);
+      const a = b.orbit.a * AU;
+      const e = b.orbit.e||0;
+      const bMinor = a*Math.sqrt(1-e*e);
       ctx.beginPath();
       // draw ellipse using the same orbital radii as the planet animation
       ctx.ellipse(0,0, a*scale, bMinor*scale, 0, 0, Math.PI*2);
       ctx.stroke();
     }
+
     ctx.restore();
   }
 
