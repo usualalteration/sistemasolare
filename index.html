@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solaris — NASA-style Solar System Simulation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <canvas id="space"></canvas>
+
+    <div id="hud">
+      <div class="panel top-left" id="stats">
+        <div class="title">Simulation Stats</div>
+        <div id="stats-content">Loading…</div>
+      </div>
+
+      <div class="panel top-right" id="controls">
+        <div class="title">Controls</div>
+        <div class="control-row">
+          <button id="playPause" class="btn">Pause</button>
+          <button id="resetCam" class="btn">Reset Camera</button>
+        </div>
+        <label>Time Speed <input id="timeScale" type="range" min="0" max="200" value="10"></label>
+        <label>Show Orbits <input id="toggleOrbits" type="checkbox" checked></label>
+        <label>Show Labels <input id="toggleLabels" type="checkbox" checked></label>
+        <label>Effects <input id="toggleEffects" type="checkbox" checked></label>
+      </div>
+
+      <div class="panel bottom-left" id="miniMap">
+        <canvas id="mini"></canvas>
+      </div>
+
+      <div class="panel bottom-right" id="infoPanel" data-open="false">
+        <div class="title">Planet Info</div>
+        <button id="closeInfo" class="close">✕</button>
+        <div id="infoContent">Double-click a planet to focus or click to view details.</div>
+      </div>
+    </div>
+
+    <div id="tooltip" class="hidden"></div>
+
+    <div id="startup">
+      <div class="splash">
+        <h1>SOLARIS</h1>
+        <p class="muted">Initializing simulation — connecting to mission control...</p>
+        <div class="bar"><span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

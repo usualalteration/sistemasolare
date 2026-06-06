@@ -1,0 +1,55 @@
+:root{
+  --glass-bg: rgba(10,14,20,0.45);
+  --accent: linear-gradient(90deg,#00e5ff,#7f00ff);
+  --panel-radius: 12px;
+  --glass-border: rgba(255,255,255,0.06);
+}
+*{box-sizing:border-box}
+html,body,#space,.app{height:100%;width:100%;margin:0;padding:0}
+body{font-family: Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;overflow:hidden;background:#000}
+.app{position:relative}
+canvas{display:block}
+#space{position:fixed;inset:0;z-index:0}
+
+#hud{position:fixed;inset:0;pointer-events:none;z-index:3}
+.panel{pointer-events:auto;position:absolute;background:var(--glass-bg);backdrop-filter:blur(8px) saturate(120%);border-radius:var(--panel-radius);padding:12px;border:1px solid var(--glass-border);color:#e8f0ff;min-width:160px}
+.panel .title{font-weight:700;margin-bottom:8px;font-size:13px;color:#cfe8ff}
+.top-left{left:18px;top:18px}
+.top-right{right:18px;top:18px}
+.bottom-left{left:18px;bottom:18px}
+.bottom-right{right:18px;bottom:18px;max-width:360px}
+
+#tooltip{position:fixed;transform:translate(-50%,-120%);padding:8px 10px;background:rgba(8,12,18,0.9);color:#fff;border-radius:8px;font-size:13px;pointer-events:none;z-index:5;border:1px solid rgba(255,255,255,0.05)}
+.hidden{display:none}
+
+.btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit;padding:6px 8px;border-radius:8px;margin-right:6px;cursor:pointer}
+.control-row{display:flex;align-items:center;margin-bottom:8px}
+
+#mini{width:180px;height:180px;display:block}
+#miniMap canvas{width:180px;height:180px}
+
+#infoPanel{width:340px;max-height:420px;overflow:auto}
+#infoPanel .close{position:absolute;right:12px;top:12px;border:none;background:transparent;font-size:16px;cursor:pointer}
+
+#startup{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center, rgba(20,10,45,0.7), rgba(0,0,0,1));z-index:6}
+.splash{width:420px;text-align:center;color:#dcecff}
+.splash h1{font-size:44px;letter-spacing:6px;margin:0}
+.splash .muted{opacity:0.8}
+.splash .bar{height:8px;background:rgba(255,255,255,0.06);border-radius:6px;margin-top:18px;overflow:hidden}
+.splash .bar span{display:block;width:0%;height:100%;background:linear-gradient(90deg,#00e5ff,#7f00ff);animation:loading 4s linear forwards}
+@keyframes loading{to{width:100%}}
+
+/* Responsive tweaks */
+@media(max-width:720px){
+  .panel{padding:10px;font-size:13px}
+  #infoPanel{width:92vw}
+  #mini{width:120px;height:120px}
+}
+
+/* HUD small helpers */
+.muted{color:rgba(220,235,255,0.78);font-size:13px}
+
+.label{font-size:12px;color:#d3e9ff}
+
+/* small glow utility */
+.glow{box-shadow:0 6px 30px rgba(127,0,255,0.14),0 2px 8px rgba(0,229,255,0.12)}
